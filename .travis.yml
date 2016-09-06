@@ -2,6 +2,11 @@ language: java
 sudo: false
 jdk:
   - oraclejdk8
+script:
+  - sh -e utilities/travis-run-ci-tests.sh
+after_success:
+  - sh -e utilities/travis-push-javadoc-to-gh-pages.sh
+  - sh -e utilities/travis-deploy-to-sonatype.sh
 addons:
   sauce_connect: true
 cache:
