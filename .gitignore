@@ -67,3 +67,12 @@ xcuserdata
 *.ipa
 
 Carthage/Build
+
+#Travis files
+chrome-linux.zip
+chrome-linux/
+chromedriver_linux64.zip
+firefox.tar.bz2
+firefox/
+geckodriver/
+geckodriver.tar.gz

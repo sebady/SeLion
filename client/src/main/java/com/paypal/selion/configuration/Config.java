@@ -40,18 +40,18 @@ import com.paypal.selion.platform.html.support.events.ElementEventListener;
  * TestNG formatted testng-suite.xml file. The testng-suite.xml file is used to override the default settings, so only
  * the data you want to modify from default values should be specified in the suite configuration file. Any data not
  * found in the testng-suite.xml file will use the built-in defaults. <br>
- * 
+ *
  * Note that some configuration properties are global-only in scope. Any value set for these applies to all suite tests
  * executed (possibly in parallel). Properties that must be specified for global use are specified below with
  * "(GLOBAL)". These properties cannot be used in SeLionLocal configuration instances. The others can be specified for
  * Global or Local (test) scope.
- * 
- * 
+ *
+ *
  * <pre>
  * &lt;!-- If parameter is empty string or omitted, please see defaults --&gt;
- * 
+ *
  * &lt;!-- SELENIUM CONFIGURATION --&gt;
- * 
+ *
  * &lt;!-- optional, defaults to "" or localhost when runLocally is true (GLOBAL) --&gt;
  * &lt;parameter name="seleniumhost" value="" /&gt;
  * &lt;!-- optional, defaults to 4444 (GLOBAL) --&gt;
@@ -63,28 +63,28 @@ import com.paypal.selion.platform.html.support.events.ElementEventListener;
  * &lt;!-- optional, turns automatic screen shots for click handlers on/off, defaults to true (GLOBAL) --&gt;
  * &lt;parameter name="autoScreenShot" value="true" /&gt;
  * &lt;!-- optional, used when runLocally is true, defaults to 'default' --&gt;
- * &lt;parameter name="profileName" value="SeleniumProfile" /&gt;     
- * 
+ * &lt;parameter name="profileName" value="SeleniumProfile" /&gt;
+ *
  * &lt;!-- SELION FILES LOCATION --&gt;
- * 
+ *
  * &lt;!-- optional, default to selionFiles (GLOBAL) --&gt;
  * &lt;parameter name="basedir" value=""  /&gt;
  * &lt;!-- optional, default to ${selionFiles.basedir}/selionLogs (GLOBAL) --&gt;
  * &lt;parameter name="workDir"  value="" /&gt;
  * </pre>
- * 
+ *
  * <strong>All other configuration settings can be set in a similar fashion.</strong><br>
- * 
+ *
  * <br>
  * Also, system properties and/or environment variables can also be used to configure SeLion. The values used should
  * always start with "SELION_" and end with the value you would like the set. The variable equals the
  * {@link ConfigProperty} variable name. So, for instance, to set the execution_timeout to "180000", the following
  * system property or environment variable should be set prior to initializing SeLion:
- * 
+ *
  * <pre>
  * SELION_EXECUTION_TIMEOUT = 180000
  * </pre>
- * 
+ *
  * <h4>The order of initialization for Configuration values is</h4>
  * <ol>
  * <li>System properties (Highest Precedence)
@@ -110,7 +110,7 @@ public final class Config {
 
     /**
      * Parses suite parameters and generates SeLion Config object
-     * 
+     *
      * @param suite
      *            list of parameters from configuration file within &lt;suite&gt;&lt;/suite&gt; tag
      */
@@ -131,7 +131,7 @@ public final class Config {
 
     /**
      * Parses configuration file and extracts values for test environment
-     * 
+     *
      * @param context
      *            list of parameters includes values within &lt;suite&gt;&lt;/suite&gt; and &lt;test&gt;&lt;/test&gt;
      *            tags
@@ -219,7 +219,7 @@ public final class Config {
     /**
      * Initializes the configuration, reloading all data while adding the supplied <code>initialValues</code> to the
      * configuration.
-     * 
+     *
      * @param initialValues
      *            The initial set of values used to configure SeLion
      */
@@ -259,7 +259,7 @@ public final class Config {
 
     /**
      * Returns a configuration property <b>String</b> value based off the {@link ConfigProperty}
-     * 
+     *
      * @param configProperty
      *            The configuration property value to return
      * @return The configuration property <b>String</b> value
@@ -271,7 +271,7 @@ public final class Config {
 
     /**
      * Returns a configuration property <b>String</b> value based off the {@link ConfigProperty}
-     * 
+     *
      * @param configProperty
      *            String Property Name
      * @return The configuration property <b>String</b> values
@@ -283,7 +283,7 @@ public final class Config {
 
     /**
      * Returns a configuration property <b>int</b> value based off the {@link ConfigProperty}
-     * 
+     *
      * @param configProperty
      *            The configuration property value to return
      * @return The configuration property <b>int</b> value
@@ -295,7 +295,7 @@ public final class Config {
 
     /**
      * Returns a configuration property <b>boolean</b> value based off the {@link ConfigProperty}
-     * 
+     *
      * @param configProperty
      *            The configuration property value to return
      * @return The configuration property <b>boolean</b> value
@@ -307,7 +307,7 @@ public final class Config {
 
     /**
      * Checks if property exists in the configuration
-     * 
+     *
      * @param propertyName
      *            String Property Name
      * @return <b>true</b> or <b>false</b>
@@ -319,7 +319,7 @@ public final class Config {
 
     /**
      * Sets a SeLion configuration value. This is useful when you want to override or set a setting.
-     * 
+     *
      * @param configProperty
      *            The configuration element to set
      * @param configPropertyValue
@@ -371,6 +371,18 @@ public final class Config {
          * that it can crash your local JVM (be it your desktop or your fusion build job).
          */
         SELENIUM_FIREFOX_PROFILE("firefoxProfile", "", false),
+
+        /**
+         * Adds additional chromedriver chromeOptions args to be used with local/remote runs using the chrome
+         * browser. <br>
+         * The string value here is specified as a comma separated list of arguments. Arguments with
+         * associated value should be separated by a '=' sign.
+         *
+         * For e.g.
+         *
+         * "start-maximized, user-data-dir=/some/path"
+         */
+        SELENIUM_CHROME_OPTIONS("chromeOptions", "", false),
 
         /**
          * The name of the JSON file that contains the configuration customization info needed for saucelabs. By
@@ -432,8 +444,8 @@ public final class Config {
         SELENIUM_PROXY_PORT("proxyServerPort", "", true),
 
         /**
-         * Use this parameter to indicate if your remote runs are to be run against the sauce lab grid or against your 
-         * own grid. This flag is required when running against the Sauce lab grid because we need to disable fetching 
+         * Use this parameter to indicate if your remote runs are to be run against the sauce lab grid or against your
+         * own grid. This flag is required when running against the Sauce lab grid because we need to disable fetching
          * of the WebDriver node IP and Port details.
          */
         SELENIUM_USE_SAUCELAB_GRID("useSauceLabGrid", "false", true),
@@ -447,7 +459,7 @@ public final class Config {
         /**
          * Use this parameter to provide SeLion with a custom capabilities provider. The value for this parameter
          * would be the fully qualified class name which is a sub-class of {@link DefaultCapabilitiesBuilder}.
-         * If more than one custom capabilities providers are required, please separate their fully qualified class 
+         * If more than one custom capabilities providers are required, please separate their fully qualified class
          * names with commas.
          */
         SELENIUM_CUSTOM_CAPABILITIES_PROVIDER("customCapabilities", "", true),
@@ -479,7 +491,7 @@ public final class Config {
         /**
          * This parameter represents the name of the app that is to be spawned. Specifying the name of the mobile app
          * should suffice.
-         * 
+         *
          * <b>Note:</b> Use of this parameter is not recommended for test suites which test different mobile
          * applications or different versions of the same mobile applications.
          */
@@ -577,7 +589,7 @@ public final class Config {
         /**
          * Turn this flag ON to see GUI actions such as loading a URL, click/setting text etc., being logged into the
          * test reports that get generated by SeLion.
-         * 
+         *
          */
         ENABLE_GUI_LOGGING("enableGUILogging", "false", true),
 
@@ -715,7 +727,7 @@ public final class Config {
 
         /**
          * Returns the name of this configuration property
-         * 
+         *
          * @return The name of this configuration property
          */
         public String getName() {
@@ -724,7 +736,7 @@ public final class Config {
 
         /**
          * Returns the default value for this configuration property
-         * 
+         *
          * @return The default <b>String</b> value for this configuration property
          */
         public String getDefaultValue() {
@@ -733,7 +745,7 @@ public final class Config {
 
         /**
          * Find the Enum for the specified property name.
-         * 
+         *
          * @return The ConfigProperty Enum for the specified name if found or null if not found.
          */
         public static ConfigProperty find(String name) {
@@ -747,7 +759,7 @@ public final class Config {
 
         /**
          * Answer if the property is a global only property (i.e only Suite scope param / System / Env Property)
-         * 
+         *
          * @return true if the property is only supported as a global property.
          */
         public boolean isGlobalScopeOnly() {

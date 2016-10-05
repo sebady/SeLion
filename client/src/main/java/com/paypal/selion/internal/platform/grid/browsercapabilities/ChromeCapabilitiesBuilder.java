@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2016 PayPal                                                                                          |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -25,6 +25,9 @@ import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * This class represents the capabilities that are specific to Chrome browser.
  */
@@ -43,6 +46,12 @@ class ChromeCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
         if ((userAgent != null) && (!userAgent.trim().isEmpty())) {
             options.addArguments("--user-agent=" + userAgent);
         }
+
+        List<String> additionalChromeOptions = getChromeOptions();
+        for (String option : additionalChromeOptions) {
+            options.addArguments(option);
+        }
+
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
         if (ProxyHelper.isProxyServerRequired()) {
             capabilities.setCapability(CapabilityType.PROXY, ProxyHelper.createProxyObject());
@@ -57,5 +66,13 @@ class ChromeCapabilitiesBuilder extends DefaultCapabilitiesBuilder {
         String location = System.getProperty(SeLionConstants.WEBDRIVER_CHROME_DRIVER_PROPERTY,
                 Config.getConfigProperty(ConfigProperty.SELENIUM_CHROMEDRIVER_PATH));
         return location;
+    }
+
+    /*
+     * Returns the comma separated chromedriver chromeoptions as a List of Strings after white space removal.
+     */
+    private List<String> getChromeOptions() {
+        String chromeOptions = Config.getConfigProperty(ConfigProperty.SELENIUM_CHROME_OPTIONS);
+        return Arrays.asList(chromeOptions.split("\\s*,\\s*"));
     }
 }

@@ -36,7 +36,6 @@ public class TestServerListener implements ISuiteListener {
         } catch (Exception e) { // NOSONAR
             System.err.println(" Unable to stop test server");
         }
-
     }
 
 }
