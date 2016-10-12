@@ -72,7 +72,9 @@ Carthage/Build
 chrome-linux.zip
 chrome-linux/
 chromedriver_linux64.zip
+google-chrome
+chromedriver
 firefox.tar.bz2
 firefox/
-geckodriver/
+geckodriver
 geckodriver.tar.gz

@@ -24,8 +24,8 @@
         </groups>
         <classes>
             <class name="com.paypal.selion.mobile.sample.TestTapPage" />
-            <class name="com.paypal.selion.mobile.sample.TestStatePage" />
-            <class name="com.paypal.selion.mobile.sample.TestTablePage" />
+            <!--<class name="com.paypal.selion.mobile.sample.TestStatePage" />-->
+            <!--<class name="com.paypal.selion.mobile.sample.TestTablePage" />-->
         </classes>
     </test>
 </suite>

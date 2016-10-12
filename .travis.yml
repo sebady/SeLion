@@ -1,10 +1,16 @@
 language: java
-sudo: required
+sudo: false
 jdk:
   - oraclejdk8
 addons:
+  firefox: latest
+  apt:
+    sources:
+    - google-chrome
+    packages:
+# This is the version of chrome available on ubuntu 12.x (precise)
+    - chromium-browser
   sauce_connect: true
-  firefox: "49.0.1"
 cache:
   directories:
     - $HOME/.m2
@@ -33,14 +39,12 @@ matrix:
     - env: TARGET=chrome
     - env: TARGET=firefox
   fast_finish: true
-
 before_script:
-  - sh -e /etc/init.d/xvfb start
-  - sleep 3 # give xvfb some time to start
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh -e /etc/init.d/xvfb start; sleep 3; fi
   - echo "MAVEN_OPTS='-Xmx1g -Xms256m'" > ~/.mavenrc
 script:
   - |
-      if [[ $TARGET == *"phantom"* ]]; then
+      if [[ $TRAVIS_OS_NAME == 'linux' ]] && [[ $TARGET == *"phantom"* ]]; then
         sh -e utilities/travis-run-ci-tests.sh
         if [[ $? == 0 ]]; then
           sh -e utilities/travis-push-javadoc-to-gh-pages.sh
@@ -48,33 +52,10 @@ script:
         fi
       fi
   - |
-      if [[ $TARGET == *"chrome"* ]]; then
-        sudo apt-get -y purge chromium-browser
-        export CHROME_REVISION=`curl -s http://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE`
-        curl -L -O "http://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/${CHROME_REVISION}/chrome-linux.zip"
-        unzip chrome-linux.zip
-        # See https://sites.google.com/a/chromium.org/chromedriver/capabilities#TOC-Using-a-Chrome-executable-in-a-non-standard-location
-        sudo ln -sf $PWD/chrome-linux/chrome-wrapper /usr/bin/google-chrome
-        export CHROMEDRIVER_VERSION=`curl -s http://chromedriver.storage.googleapis.com/LATEST_RELEASE`
-        curl -L -O "http://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
-        unzip chromedriver_linux64.zip && chmod +x chromedriver && sudo mv chromedriver /usr/local/bin
-        google-chrome --version
-        mvn test -pl client -DsuiteXmlFile=Chrome-Suite.xml -DSELION_SELENIUM_RUN_LOCALLY=true \
-          -DSELION_SELENIUM_CHROMEDRIVER_PATH=/usr/local/bin/chromedriver \
-          -DSELION_SELENIUM_CHROME_OPTIONS="--no-sandbox" -B -V
+      if [[ $TRAVIS_OS_NAME == 'linux' ]] && [[ $TARGET == *"chrome"* ]]; then
+        sh -e utilities/travis-run-chrome-tests.sh
       fi
   - |
-      if [[ $TARGET == *"firefox"* ]]; then
-        export GECKODRIVER_VERSION=v0.10.0
-        curl -L -o geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz
-        gunzip -c geckodriver.tar.gz | tar xopf -
-        chmod +x geckodriver && sudo mv geckodriver /usr/local/bin
-        # Remove existing ff
-        sudo rm -fr /usr/local/firefox-*
-        # and install downloaded travis ff add-on
-        tar -xjf /tmp/firefox-49.0.1.tar.bz2
-        sudo ln -sf $PWD/firefox/firefox /usr/local/bin/firefox
-        firefox --version
-        mvn test -pl client -DsuiteXmlFile=Firefox-Suite.xml -DSELION_SELENIUM_RUN_LOCALLY=true \
-          -DSELION_SELENIUM_USE_GECKODRIVER=true -DSELION_SELENIUM_GECKODRIVER_PATH=/usr/local/bin/geckodriver -B -V
+      if [[ $TRAVIS_OS_NAME == 'linux' ]] && [[ $TARGET == *"firefox"* ]]; then
+        sh -e utilities/travis-run-firefox-tests.sh
       fi
