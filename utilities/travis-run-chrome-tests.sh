@@ -9,8 +9,8 @@ if [ -n "${SAUCE_USERNAME}" ]; then
   echo { \"sauceUserName\": \"${SAUCE_USERNAME}\", \"sauceApiKey\": \"${SAUCE_ACCESS_KEY}\", \"tunnel-identifier\": \"__string__${TRAVIS_JOB_NUMBER}\", \"build\": \"${TRAVIS_BUILD_NUMBER}\", \"idle-timeout\": 120, \"tags\": [\"commit ${TRAVIS_COMMIT}\", \"branch ${TRAVIS_BRANCH}\", \"pull request ${TRAVIS_PULL_REQUEST}\"] } > client/src/test/resources/sauceConfig.json
 fi
 
-mkdir -p target
-cd target
+mkdir -p cache
+cd cache
 if [ ! -f "./google-chrome" ]; then
   export CHROME_REVISION=`curl -s http://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE`
   curl -L -O "http://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/${CHROME_REVISION}/chrome-linux.zip"
@@ -27,9 +27,9 @@ if [ ! -f "./chromedriver" ]; then
 fi
 cd ..
 
-export PATH=$PWD/target:$PATH
+export PATH=$PWD/cache:$PATH
 mvn test -pl client -DsuiteXmlFile=Chrome-Suite.xml \
   -DSELION_SELENIUM_RUN_LOCALLY=true \
-  -DSELION_SELENIUM_CHROMEDRIVER_PATH=$PWD/target/chromedriver \
+  -DSELION_SELENIUM_CHROMEDRIVER_PATH=$PWD/cache/chromedriver \
   -DSELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER=com.paypal.selion.TestCapabilityBuilder \
-  -DBROWSER_PATH=$PWD/target/google-chrome -B -V
+  -DBROWSER_PATH=$PWD/cache/google-chrome -B -V

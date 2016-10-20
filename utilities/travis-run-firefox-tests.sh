@@ -16,8 +16,8 @@ then
   rm -fr ~/.mozilla
 fi
 
-mkdir -p target
-cd target
+mkdir -p cache
+cd cache
 if [ ! -f "./firefox/firefox" ]
 then
   export FIREFOX_VERSION=49.0.1
@@ -36,8 +36,8 @@ then
 fi
 cd ..
 
-export PATH="$PWD/target/firefox:$PATH"
+export PATH="$PWD/cache/firefox:$PATH"
 mvn test -pl client -B -V -DsuiteXmlFile=Firefox-Suite.xml -DSELION_SELENIUM_RUN_LOCALLY=true \
-  -DSELION_SELENIUM_USE_GECKODRIVER=true -DSELION_SELENIUM_GECKODRIVER_PATH=$PWD/target/geckodriver \
+  -DSELION_SELENIUM_USE_GECKODRIVER=true -DSELION_SELENIUM_GECKODRIVER_PATH=$PWD/cache/geckodriver \
   -DSELION_SELENIUM_CUSTOM_CAPABILITIES_PROVIDER=com.paypal.selion.TestCapabilityBuilder \
-  -DBROWSER_PATH=$PWD/target/firefox/firefox
+  -DBROWSER_PATH=$PWD/cache/firefox/firefox
